@@ -4,15 +4,113 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
 
-    <title>Example Student's HCDE 439 Physical Computing Page!</title>
+    <title>Ethan's HCDE 439 Physical Computing Page!</title>
 
     <link href="style.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
-    <h1>Example Student's Assignment 1!</h1>
     <div class="header">
-      <img src="red-panda.jpg" />
-      <p>Here is all the documentation for assignment 1!</p>
+      <h1>Assignment 1: Blink!</h1>
+    </div>
+    <br>
+    
+    <div class="circuit">
+      <h2>My Circuit:</h2>
+      <img src="circuit-image.JPG" style="max-width: 600px;"/><br>
+      <p>This is my completed circuit with three red LEDs. My calculated resistance was 150 ohms for each LED, but I used 100 ohm resistors because it was the closest value. See schematic for calculations.</p>
+    </div>
+    <br><br>
+    
+    <div class="schematic">
+      <h2>My Schematic:</h2>
+      <img src="schematic.jpg" style="max-width: 600px;"/>
+    </div>
+    <br><br>
+
+    <div class="code">
+      <h2>My code:</h2>
+      <pre>
+      // define LED pin connections
+        int LED_1 = 13;
+        int LED_2 = 12;
+        int LED_3 = 11;
+
+        // the setup function runs once when you press reset or power the board
+        void setup() {
+        // initialize digital pin LED_1, LED_2, LED_3 as an output.
+          pinMode(LED_1, OUTPUT);
+          pinMode(LED_2, OUTPUT);
+          pinMode(LED_3, OUTPUT);
+        }
+
+        // the loop function runs over and over again forever
+        void loop() {
+          // Turn LED #1 on by setting the pin to HIGH voltage level
+          digitalWrite(LED_1, HIGH);
+          // Turn LED #2 off by setting the pin to LOW voltage level                
+          digitalWrite(LED_2, LOW);
+          // Turn LED #3 off by setting the pin to LOW voltage level
+          digitalWrite(LED_3, LOW);
+          // wait for a second
+          delay(1000);
+  
+          // Turn LED #1 off by setting the pin to LOW voltage level
+          digitalWrite(LED_1, LOW);
+          // Turn LED #2 on by setting the pin to HIGH voltage level  
+          digitalWrite(LED_2, HIGH);
+          // Turn LED #3 off by setting the pin to LOW voltage level
+          digitalWrite(LED_3, LOW);
+          // wait for a second
+          delay(1000);
+
+          // Turn LED #1 off by setting the pin to LOW voltage level
+          digitalWrite(LED_1, LOW); 
+          // Turn LED #2 off by setting the pin to LOW voltage level
+          digitalWrite(LED_2, LOW);
+          // Turn LED #3 on by setting the pin to HIGH voltage level
+          digitalWrite(LED_3, HIGH);
+          // wait for a second
+          delay(1000);
+        }
+      </pre>
+    </div>
+    <br><br>
+
+    <div class="operation">
+      <h2>The Operation:</h2>
+      <img src="operation.gif" style="max-width: 600px;"/><br>
+      <p>Blinking lights :)</p>
+    </div>
+    <br><br>
+    
+    <div class="additional questions">
+      <h2>Additional Questions:</h2>
+      <br>
+      <h4>1. Draw a graph where the X axis is time and the Y axis is voltage across the LEDs. Draw a line for each of your 3 LEDs.</h4>
+      <img src="voltage-graph.jpg" style="max-width: 600px;"/>
+      <br><br>
+      <h4>2. How many LEDs could you blink independently with your Arduino? How much current would that draw?</h4>
+      <p>To blink independently, each LED needs its own pin and our Arduino Uno R3 has 12 usable digital pins. Therefore, 12 LEDs can blink independently with our Arduino.</p> <br>
+      <p>
+        Calculating how much current it would draw: <br>
+        Assuming I = 20mA <br>
+        12 LEDS x 20mA = 240mA <br><br>
+        However, single pin current should not exceed 40mA and total current should not exceed 150mA. Therefore, you would need to add the necessary resistors in order to operate all the LEDs safely.
+      </p>
+      <br><br>
+      <h4>3. How fast do you need to blink your LEDs until you no longer can tell that they are blinking?</h4>
+      <p>For me, I could no longer tell they were blinking when there was 15 ms between blinks, or about 66 flashes per second.</p>
+
+      <br><br>
+      <h4>4. AI Use</h4>
+      <p>
+        I used ChatGPT to help with some of the formatting of my webpage. I specifically used it on displaying the code snippet for my circuit.
+        The prompt(s) I used were: <br><br>
+
+        Prompt: Is there a way I can display a snippet of code without having to include a line break <br> after every line of code? <br><br>
+
+        Output: You can use HTML (<'pre'>) tag to display code while preserving its line breaks and spacing, without needing to add a (<'br'>) tag after every line.
+      </p>
     </div>
   </body>
 </html>
