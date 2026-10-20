@@ -18,7 +18,13 @@
     <!-- ===================== MY CIRCUIT ===================== -->
     <div class="circuit">
       <h2>My Circuit:</h2>
-      <img src="a2-circuit.JPG" style="max-width: 600px;"/><br>
+      <figure>
+        <img src="a2-circuit.JPG" style="max-width: 600px;"/>
+        <figcaption>
+          This is the circuit I created using three LEDs and a button.
+        </figcaption>
+      </figure>
+      <br>
       <p> 
         For this Assignment, I created a "red light, green light" toy/controller. When the button is pressed,
         the green LED stays on for a random amount of time and then fades out. The yellow LED then blinks as
@@ -30,8 +36,99 @@
     <!-- ===================== MY SCHEMATIC ===================== -->
     <div class="schematic">
       <h2>My Schematic:</h2>
-      <img src="#" style="max-width: 600px;"/>
+      <figure>
+        <img src="a2-schematic.jpg" style="max-width: 600px;"/>
+        <figcaption>
+          Schematic of circuit. I calculated the minimum resistance for each LED at a current of 20 mA and
+          resistances ranged from 140 to 150 ohms. Because any larger value is safe, I just used 220 ohm resistors
+          all around.
+        </figcaption>
+      </figure>
+      <br>
+      <p>
+        <!--  -->
+      </p>
     </div>
     <br><br>
+
+    <!-- ===================== MY CODE ===================== -->
+    <div class="code">
+      <h2>My Code:</h2>
+      <pre><code>
+// Define button pin connection
+const int buttonPin = 2;
+
+// Define LED pin connections
+const int ledGreen= 6;
+const int ledYellow = 8;
+const int ledRed = 10;
+
+// How bright the fading LED is, in this case ledGreen
+int brightness = 255;
+// how many points to fade the LED by
+int fadeAmount = 5;
+
+void setup() {
+  // Declare button pin (2) to be an input
+  pinMode(buttonPin, INPUT);
+
+  // Declare LED light pins to be an output
+  pinMode(ledGreen, OUTPUT);
+  pinMode(ledYellow, OUTPUT);
+  pinMode(ledRed, OUTPUT);
+
+  // Start with the red LED on ("stop" state)
+  digitalWrite(ledRed, HIGH);
+  // Random number generator which will be needed later
+  randomSeed(analogRead(A0));
+}
+
+void loop() {
+  // If the button is pressed
+  if (digitalRead(buttonPin) == HIGH) {
+    // Turn the red LED off
+    digitalWrite(ledRed, LOW);
+    // Reset the brightness to 255 or full before each loop
+    brightness = 255;
+    // Turn the green LED on at full brightness, ("go" state)
+    analogWrite(ledGreen, brightness);
+    // Stay green for a random amount of time, between 3000 and 10000 ms
+    delay(random(3000, 10000));
+    
+    // Fading the green light
+    while (brightness >= 0) {
+      analogWrite(ledGreen, brightness);
+      // Lower the brightness for next time through the loop
+      brightness = brightness - fadeAmount;
+      // Wait for 30 ms to see the dimming effect
+      delay(30);
+    }
+    
+    // Blink the yellow LED 5 times before turning red ("warning" state)
+    for (int i = 0; i < 5; i++) {
+      // Turn the yellow LED on
+      digitalWrite(ledYellow, HIGH);
+      // Keep it on for 300 ms
+      delay(300);
+      // Turn the yellow LED off
+      digitalWrite(ledYellow, LOW);
+      // Keep it off for 300 ms
+      delay(300);
+    }
+    // Turn the red LED back on ("stop")
+    digitalWrite(ledRed, HIGH);
+
+    // Wait here while the button is still held down so the sequence doesn't restart by itself
+    while (digitalRead(buttonPin) == HIGH) {
+      delay(10);
+    }
+  }
+}
+      </code></pre>
+    </div>
+    <br><br>
+
+    <!-- ===================== MY OPERATION ===================== -->
+
   </body>
 </html>
