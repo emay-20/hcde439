@@ -138,6 +138,68 @@ void loop() {
         </figcaption>
       </figure>
     </div>
+    <br><br>
 
+    <!-- ===================== ADDITIONAL QUESTIONS ===================== -->
+    <div class="additional-questions">
+      <h2>Additional Questions:</h2>
+    </div>
+    <br>
+
+    <!-- Question 1 -->
+    <div class="question-1">
+      <h4>1: Draw a chart where the X axis is time and the Y axis is voltage. Draw 3 lines representing the voltage across an LED with analogWrite(led, 64), analogWrite(led, 128), and analogWrite(led, 255).</h4>
+      <br>
+      <img src="a2-graph.jpg" style="max-width: 600px;"/>
+    </div>
+    <br><br>
+
+    <!-- Question 2 -->
+    <div class="question-2">
+      <h4>2:  If all your LEDs were on simultaneously, what would the total current draw be? Is this above or below the total Arduino current draw limits? If all your LEDs were on, how long would your circuit run if powered by a 1200 mAh battery?</h4>
+      <br>
+      <p>
+        Assuming a typical current of I = 20 mA, the total draw would be 60 mA or 0.06 A. This is below the total Arduino current draw limits of 150 mA. <br>
+        3 LEDs x 20 mA = 60 mA
+      </p>
+      <br>
+      <p>
+        Thus considering total current I = 60 mA, the circuit would run for about 20 hours on a 1200 mAh battery. <br>
+        Runtime = 1200 mAh / 60 mA = 20 hours 
+      </p>
+    </div>
+    <br><br>
+
+    <!-- Question 3 -->
+    <div class="question-3">
+      <h4>3: Measure and record the actual voltage across one of your LEDs when it's on. How does this compare to the theoretical forward voltage for your LED color?</h4>
+      <br>
+      <p>
+        When measuring the voltage across the red LED in my circuit, I recorded a value of 1.95V when it was on.
+        This is consistent with the theoretical forward voltage of a red LED which is 2V or in the range of
+        ~1.8V – 2V.
+      </p>
+    </div>
+    <br><br>
+
+    <!-- AI Use Statement: -->
+    <div class="ai-use">
+      <h4>AI Use Statement</h4>
+      <br>
+      <p>I used Claude to help me implement an embedded youtube video on my webpage, to show a demo of my circuit.</p>
+      <br>
+      <p><strong>Prompt:</strong> How do I implement an embedded Youtube video in HTML?</p>
+      <br>
+      <p><strong>Output:</strong> On YouTube, click Share, then Embed, and copy the code it gives you. It looks like this:</p>
+  <pre><code>&lt;figure&gt;
+  &lt;iframe src="https://www.youtube.com/embed/VIDEO_ID" style="width: 100%; max-width: 600px; aspect-ratio: 16 / 9;" allowfullscreen&gt;&lt;/iframe&gt;
+  &lt;figcaption&gt;
+    Caption here.....
+  &lt;/figcaption&gt;
+&lt;/figure&gt;</code></pre>
+      <br>
+      <p>I implemented the exact output, only changing the video ID as necessary.</p>
+    </div>
+    <br><br>
   </body>
 </html>
