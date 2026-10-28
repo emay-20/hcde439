@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+
+    <title>Ethan's HCDE 439 Physical Computing Page!</title>
+
+    <link href="style.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <!-- ===================== Title ===================== -->
+    <div class="header">
+      <h1>Assignment 3: Input Output!</h1>
+    </div>
+    <br>
+
+    <!-- ===================== MY CIRCUIT ===================== -->
+    <div class="circuit">
+      <h2>My Circuit:</h2>
+      <figure>
+        <img src="a3-circuit.JPG" style="max-width: 600px;"/>
+        <figcaption>
+          This is the circuit I created using 2 LEDs, a photoresistor, and resistors.
+        </figcaption>
+      </figure>
+      <br>
+      <p> 
+        For this Assignment, I created a smart home product that monitors whether the
+        solar panels in your home are charging and getting sufficient sunlight. When the
+        solar panels are charging and receiving adequate light, the green LED lights stays on.
+        And if there is insufficient sunlight, a red LED turns on.
+      </p>
+    </div>
+    <br><br>
+
+    <!-- ===================== MY SCHEMATIC ===================== -->
+    <div class="schematic">
+      <h2>My Schematic:</h2>
+      <figure>
+        <img src="a3-schematic.jpg" style="max-width: 600px;"/>
+        <figcaption>
+          Schematic of circuit. I calculated the minimum resistance for each LED at a current of 20 mA and
+          resistances ranged from 140 to 150 ohms. Because any larger value is safe, I just used 220 ohm resistors
+          for the LEDs.
+
+          When the photoresistor was covered, I got a resistance of about 29,370 ohms (1.27V), and when I shined a light on it, about 395 ohms (4.81V).
+          The geometric mean of those came out to be around 3.4k ohms. I used a 10k ohms resistor because it was a standard value I had available and
+          it gave a wide enough voltage range.
+        </figcaption>
+      </figure>
+      <br>
+      <p>
+        <!--  -->
+      </p>
+    </div>
+    <br><br>
+
+    <!-- ===================== MY CODE ===================== -->
+    <div class="code">
+      <h2>My Code:</h2>
+      <pre><code>
+// define the analog input pin connected to the photoresistor
+const int photoresistorPin = A2;
+// define pin connected to the red LED
+const int redLed = 6;
+// define  pin connected to the green LED
+const int greenLed = 3;
+    
+// store the lowest sensor reading measured during calibration (covering the sensor)
+const int sensorMin = 260;
+// store the highest sensor reading measured during calibration (no flashlight, just natural room light)
+const int sensorMax = 985;
+// calculate the midpoint of the calibrated sensor range
+const int midpoint = (sensorMin + sensorMax) / 2;
+
+// store the current photoresistor reading
+int sensorValue = 0;
+// store the calculated green LED brightness
+int greenValue = 0;
+// store the calculated red LED brightness
+int redValue = 0;
+
+void setup() {
+    // initialize serial communications at 9600 bps:
+    Serial.begin(9600);
+    // set red LED as an output
+    pinMode(redLed, OUTPUT);
+    // set green LED as an output
+    pinMode(greenLed, OUTPUT);
+}
+    
+void loop() {
+    // read the analog in value:
+    sensorValue = analogRead(photoresistorPin);
+
+    // map the sensor reading from the calibrated light range to the green LED value (from 0 to 255)
+    greenValue = map(sensorValue, sensorMin, sensorMax, 0, 255);
+
+    // check whether sufficient light is detected.
+    if (sensorValue > midpoint) {
+        // turn off the red LED when there is sufficient light
+        analogWrite(redLed, 0);
+        // set green LED brightness according to the detected light level
+        analogWrite(greenLed, greenValue);
+    } else {
+        // turn on the red LED when insufficient light is detected.
+        analogWrite(redLed, 255);
+        // turn off the green LED when insufficient light is detected.
+        analogWrite(greenLed, 0);
+    }
+    
+    // print the sensor reading label to the serial monitor
+    Serial.print("Light level: ");
+    // display the raw sensor reading
+    Serial.print(sensorValue);
+
+    // print the current solar status label
+    Serial.print(" | Solar status: ");
+    // report whether the system detects sufficient light
+    if (sensorValue > midpoint) {
+        // print "SUNLIGHT DETECTED" if there is sufficient light
+        Serial.println("SUNLIGHT DETECTED (charging)");
+    } else {
+        // print "LOW LIGHT" if there is sufficient light
+        Serial.println("LOW LIGHT");
+    }
+
+    // Wait 200 ms
+    delay(200);
+}
+      </code></pre>
+    </div>
+    <br><br>
+
+    <!-- ===================== MY OPERATION ===================== -->
+    <div class="operation">
+      <h2>The Operation:</h2>
+      <figure>
+        <iframe src="https://www.youtube.com/embed/8e_WRJFOFNo" style="width: 100%; max-width: 600px; aspect-ratio: 16 / 9;" allowfullscreen></iframe>
+        <figcaption>
+         Demo of my circuit!
+        </figcaption>
+      </figure>
+      <br>
+      <img src="a3-serial-output.png" style="max-width: 600px;"/>
+        <figcaption>
+        My serial output
+        </figcaption>
+    </div>
+    <br><br>
+
+    <!-- ===================== ADDITIONAL QUESTIONS ===================== -->
+    <div class="additional-questions">
+      <h2>Additional Questions:</h2>
+    </div>
+    <br>
+
+    <!-- Question 1 -->
+    <div class="question-1">
+      <h4>1: In your voltage divider, can the variable resistor be either R1 or R2 or does it need to be one or the other? Justify your answer with example calculations.</h4>
+      <br>
+      <p>
+        The variable resistor can be either R1 or R2. If the variable resistor became R2, it would just cause the output voltage to decrease as more light gets shined on 
+        the photoresistor and to increase the darker it gets. This is because the photoresistor's resistance decreases with more light and increases in darker conditions.
+      </p>
+      <br>
+      <img src="a3-aq1.png" style="max-width: 600px;"/>
+    </div>
+    <br><br>
+
+    <!-- Question 2 -->
+    <div class="question-2">
+      <h4>2: Draw a graph where the x-axis is time and the y-axis is voltage. Plot the voltage at V-measure (where your pin is reading the voltage) of your voltage divider of your shared gif/video.</h4>
+      <br>
+      <img src="a3-graph.png" style="max-width: 600px;"/>
+    </div>
+    <br><br>
+
+    <!-- Question 3 -->
+    <div class="question-3">
+      <h4>3: AnalogWrite and analogRead are respectively 8-bit and 10-bit values. Imagine you had 10-bit PWM and a 16-bit analog-to-digital converter instead. How would this change your map() code? Explain your answer.</h4>
+      <br>
+      <p>
+        This would change the map() code because we would now want an output range between 0-1023 for a 10-bit PWM and input readings between 0-65535 for a 16-bit converter.
+        <br><br>
+        10-bit: (2^10) - 1 = 1023 <br>
+        16-bit converter: (2^16) - 1 = 65535
+        <br><br>
+        I do define sensorMin and sensorMax in my code to reflect my lowest and highest readings, so I would probably need to measure them again using the 16 bit converter. 
+        My updated map() code would then be: <br><br>
+        greenValue = map(sensorValue, sensorMin, sensorMax, 0, 1023);
+      </p>
+    </div>
+    <br><br>
+
+    <!-- AI Use Statement:
+    <div class="ai-use">
+      <h4>AI Use Statement</h4>
+      <br>
+      <p>I used Claude to help me implement an embedded youtube video on my webpage, to show a demo of my circuit.</p>
+      <br>
+      <p><strong>Prompt:</strong> How do I implement an embedded Youtube video in HTML?</p>
+      <br>
+      <p><strong>Output:</strong> On YouTube, click Share, then Embed, and copy the code it gives you. It looks like this:</p>
+  <pre><code>&lt;figure&gt;
+  &lt;iframe src="https://www.youtube.com/embed/VIDEO_ID" style="width: 100%; max-width: 600px; aspect-ratio: 16 / 9;" allowfullscreen&gt;&lt;/iframe&gt;
+  &lt;figcaption&gt;
+    Caption here.....
+  &lt;/figcaption&gt;
+&lt;/figure&gt;</code></pre>
+      <br>
+      <p>I implemented the exact output, only changing the video ID as necessary.</p>
+    </div>
+    <br><br> -->
+  </body>
+</html>
