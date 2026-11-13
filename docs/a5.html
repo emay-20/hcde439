@@ -73,14 +73,13 @@ I = V / R -> 5 V / 1,000,000 ohms = 5 &micro;A
           <h4>Expected voltages and currents</h4>
           Gate: The Arduino outputs 5 V when the PWM signal is high (255) and 0 V when it is low (0).
           <br>
-          V<sub>GS</sub> -> V<sub>G</sub> - V<sub>S</sub> = 5 V - 0 V = 5 V
-          <br>
-          V<sub>t</sub> = 1 V to 2 V (according to IRLZ44N datasheet)
-          <br>
-          V<sub>GS</sub> &ge; V<sub>t</sub>, so the MOSFET is in saturation (acts like a short circuit)
+          <pre>
+V<sub>GS</sub> -> V<sub>G</sub> - V<sub>S</sub> = 5 V - 0 V = 5 V
+V<sub>t</sub> = 1 V to 2 V (according to IRLZ44N datasheet)
+V<sub>GS</sub> &ge; V<sub>t</sub>, so the MOSFET is in saturation (acts like a short circuit)
+        </pre>
         </figcaption>
       </figure>
-      <br>
       <p>
         <!--  -->
       </p>
