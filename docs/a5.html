@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+
+    <title>Ethan's HCDE 439 Physical Computing Page!</title>
+
+    <link href="style.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <!-- ===================== Title ===================== -->
+    <div class="header">
+      <h1>Assignment 5: High(er) voltage and transistors!</h1>
+    </div>
+    <br>
+
+    <!-- ===================== MY CIRCUIT ===================== -->
+    <div class="circuit">
+      <h2>My Circuit:</h2>
+      <figure>
+        <img src="a5-circuit.JPG" style="max-width: 600px;"/>
+        <figcaption>
+          This is the circuit I created using a LED light strip, conductive foil, n-mosfet transistor, 12V power source, and resistor.
+        </figcaption>
+      </figure>
+      <br>
+      <p> 
+        For this Assignment, I created a touch activated LED light strip controller, with the tinfoil acting as a capacitive touch sensor.
+        Depending on the value from the capacitive touch sensor reading, that determines how bright the LED strip is. Touching the foil with
+        more force should emit more light, while a hovering hand would emit less light.
+      </p>
+    </div>
+    <br><br>
+
+    <!-- ===================== MY SCHEMATIC ===================== -->
+    <div class="schematic">
+      <h2>My Schematic:</h2>
+      <figure>
+        <img src="a5-schematic.jpg" style="max-width: 600px;"/>
+        <figcaption>
+          <h3>Calculations</h3>
+          <h4>LED strip current</h4>
+          My LED strip piece is one segment with 3 LEDs and 1 resistor. The resistor is marked "181", which I believe
+          means it is a 180 ohm resistor. I assumed each white LED drops about 3.3 V.
+          <br><br>
+          <pre>
+Voltage across the resistor = 12 V - (3 x 3.3 V) = 12 V - 9.9 V = 2.1 V
+I = V / R -> 2.1 V / 180 ohms; = 0.0117 A or 11.7 mA
+P = V x I = 12 V x 0.0117 A = 0.14 W
+          </pre>
+          <br>
+          <h4>Transistor current limit</h4>
+          The IRLZ44N datasheet gives the absolute maximum amount of current between pins 2 and 3 is 47 amps.
+          <br><br>
+          <pre>
+Percent used = 0.0117 A / 47 A x 100 = 0.025%
+          </pre>
+          The current load is far from the limit, so the transistor is safe.
+          <br><br>
+          <h4>Touch sensor resistor current</h4>
+          <pre>
+I = V / R -> 5 V / 1,000,000 ohms = 5 &micro;A
+          </pre>
+          This is below the Arduino's current limit, so it is safe.
+          <br><br>
+          I chose 1M ohm for my resistor value because it provided a good sweet spot for how reactive I wanted my touch sensor to be.
+          With the 1M ohm resistor, I could reach the end of the sensor range by touching the foil directly, but I could still hover 
+          my hand over it to control the lower end of the PWM range, so the LED strip dims and brightens as my hand gets closer.
+          Regarding my code below, when I was using 30 samples per reading, I found 30 to be a good "not touched" threshold value and
+          1400 to be a good "touched" threshold value after looking at the serial monitor.
+          <br><br>
+          <h4>Expected voltages and currents</h4>
+          Gate: The Arduino outputs 5 V when the PWM signal is high (255) and 0 V when it is low (0).
+          <br>
+          V<sub>GS</sub> -> V<sub>G</sub> - V<sub>S</sub> = 5 V - 0 V = 5 V
+          <br>
+          V<sub>t</sub> = 1 V to 2 V (according to IRLZ44N datasheet)
+          <br>
+          V<sub>GS</sub> &ge; V<sub>t</sub>, so the MOSFET is in saturation (acts like a short circuit)
+        </figcaption>
+      </figure>
+      <br>
+      <p>
+        <!--  -->
+      </p>
+    </div>
+    <br><br>
+
+    <!-- ===================== MY CODE ===================== -->
+    <div class="code">
+      <h2>My Code:</h2>
+      <pre><code>
+// Implement CapitiveSense library (input)
+#include &lt;CapacitiveSensor.h&gt;
+        
+// Set up the sensor: send pin 2, receive pin 4
+CapacitiveSensor cs_s2_r4 = CapacitiveSensor(2, 4);
+
+// Define pin to MOSFET gate
+const int LED_PIN = 5;
+
+// Readings at or below this value register as not touched
+const long TOUCH_MIN = 30;
+// Readings at or above this value register as a full touch
+const long TOUCH_MAX = 1400;
+
+void setup() {
+  // Begin Serial communication to print values
+  Serial.begin(9600);
+  // Set the MOSFET pin as an output
+  pinMode(LED_PIN, OUTPUT);
+}
+
+void loop() {
+  // Read the capacitive sensor value
+  long total = cs_s2_r4.capacitiveSensor(30);
+  // Limit sensor values to range between TOUCH_MIN and TOUCH_MAX
+  long sensor_range = constrain(total, TOUCH_MIN, TOUCH_MAX);
+  // Translate the touch range to the PWM range (0 = off, 255 = full brightness)
+  int brightness = map(clamped, TOUCH_MIN, TOUCH_MAX, 0, 255);
+  // Output PWM to the MOSFET gate to set the LED's brightness
+  analogWrite(LED_PIN, brightness);
+  // Print sensor reading to serial monitor
+  Serial.println(total);
+  // Delay by 20ms
+  delay(20);
+}
+      </code></pre>
+    </div>
+    <br><br>
+
+    <!-- ===================== MY OPERATION ===================== -->
+    <div class="operation">
+      <h2>The Operation:</h2>
+      <figure>
+        <iframe src="https://www.youtube.com/embed/8DIwZIifJjM" style="width: 100%; max-width: 600px; aspect-ratio: 16 / 9;" allowfullscreen></iframe>
+        <figcaption>
+         Demo of my circuit!
+        </figcaption>
+      </figure>
+    </div>
+    <br><br>
+
+    <!-- ===================== ADDITIONAL QUESTIONS ===================== -->
+    <div class="additional-questions">
+      <h2>Additional Questions:</h2>
+    </div>
+    <br>
+
+    <!-- Question 1 -->
+    <div class="question-1">
+      <h4>
+        1: These are the datasheets for the n-mosfet transistor: DMT6009LCT, IRLZ44N, P30N06LE. Read the text on your mosfet to see which one you have. For your mosfet, what is the absolute maximum amount of current between pins 2 and 3?
+      </h4>
+      <br>
+      <p>
+        For the IRLZ44N mosfet, the absolute maximum amount of current between pins 2 and 3 is 47 amps. 
+      </p>
+    </div>
+    <br><br>
+
+    <!-- Question 2 -->
+    <div class="question-2">
+      <h4>2: Draw a schematic for a circuit with using at least your arduino, a DC motor, a flyback diode, and <s>capacitors between power and ground</s>. Find parts with datasheets you could use for each of these schematic components.</h4>
+      <br>
+      <img src="a5-aq2.jpg" style="max-width: 600px;"/>
+      <!-- <p>
+       
+      </p> -->
+    </div>
+    <br><br>
+
+    <!-- Question 3 -->
+    <div class="question-3">
+      <h4>3: Here is the datasheet for the L293D chip: https://www.ti.com/product/L293D. Draw a schematic using at least your arduino, this chip, and two motors. Write (pseudo) code that shows how you would move the motors both forward, both back, then one forward one back, and one back then forward.</h4>
+      <br>
+      <img src="a5-aq3.png" style="max-width: 600px;"/>
+      <p>
+        <pre><code>
+// Set up pins
+Set Pin 5-10 as outputs
+
+// Enable both motor drivers
+Set Pin 5 and 8 as HIGH
+
+// Move both motors forward
+Set Pin 6 to HIGH and Pin 7 to LOW
+Set Pin 9 to HIGH and Pin 10 to LOW
+Add a delay
+
+// Move both motors back
+Set Pin 6 to LOW and Pin 7 to HIGH
+Set Pin 9 to LOW and Pin 10 to HIGH
+Add a delay
+
+// Move motor 1 forward and motor 2 back
+Set Pin 6 to HIGH and Pin 7 to LOW
+Set Pin 9 to LOW and Pin 10 to HIGH
+Add a delay
+
+// Move motor 1 back and motor 2 forward
+Set Pin 6 to LOW and Pin 7 to HIGH
+Set Pin 9 to HIGH and Pin 10 to LOW
+Add a delay
+        </code></pre>
+      </p>
+    </div>
+    <br><br>
+
+    <!-- AI Use Statement:
+    <div class="ai-use">
+      <h4>AI Use Statement</h4>
+      <br>
+      <p>I used Claude to help me implement an embedded youtube video on my webpage, to show a demo of my circuit.</p>
+      <br>
+      <p><strong>Prompt:</strong> How do I implement an embedded Youtube video in HTML?</p>
+      <br>
+      <p><strong>Output:</strong> On YouTube, click Share, then Embed, and copy the code it gives you. It looks like this:</p>
+  <pre><code>&lt;figure&gt;
+  &lt;iframe src="https://www.youtube.com/embed/VIDEO_ID" style="width: 100%; max-width: 600px; aspect-ratio: 16 / 9;" allowfullscreen&gt;&lt;/iframe&gt;
+  &lt;figcaption&gt;
+    Caption here.....
+  &lt;/figcaption&gt;
+&lt;/figure&gt;</code></pre>
+      <br>
+      <p>I implemented the exact output, only changing the video ID as necessary.</p>
+    </div>
+    <br><br> -->
+  </body>
+</html>
